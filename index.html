@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeAlpha Image Gallery</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <h1>Image <span class="accent">Gallery</span></h1>
+    <p>Cars, anime art and food. Click any image to view it full size.</p>
+
+    <!-- Filter buttons. data-filter tells JavaScript which category to show. -->
+    <nav class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="cars">Cars</button>
+      <button class="filter-btn" data-filter="anime">Anime</button>
+      <button class="filter-btn" data-filter="food">Food</button>
+    </nav>
+  </header>
+
+  <!-- JavaScript fills this grid with the images -->
+  <main id="gallery" class="gallery"></main>
+
+  <!-- LIGHTBOX: the full-screen viewer, hidden until an image is clicked -->
+  <div id="lightbox" class="lightbox">
+    <button id="lightbox-close" class="lightbox-btn close-btn" aria-label="Close">&times;</button>
+    <button id="lightbox-prev" class="lightbox-btn nav-btn prev-btn" aria-label="Previous">&#10094;</button>
+
+    <figure class="lightbox-content">
+      <img id="lightbox-img" src="" alt="" />
+      <figcaption>
+        <span id="lightbox-title"></span>
+        <span id="lightbox-counter" class="counter"></span>
+      </figcaption>
+    </figure>
+
+    <button id="lightbox-next" class="lightbox-btn nav-btn next-btn" aria-label="Next">&#10095;</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

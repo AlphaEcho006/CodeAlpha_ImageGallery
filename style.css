@@ -1,0 +1,239 @@
+/* ---------- COLORS (same dark + mint style as the calculator) ---------- */
+:root {
+  --bg: #0f1115;
+  --card: #171a21;
+  --text: #e8eaf0;
+  --text-dim: #8b91a3;
+  --accent: #3ddc97;        /* mint green */
+  --accent-dark: #0f1115;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  padding: 24px 20px 60px;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* ---------- HEADER ---------- */
+.header {
+  text-align: center;
+  margin: 24px auto 36px;
+}
+
+.header h1 {
+  font-size: clamp(2rem, 6vw, 3rem); /* grows and shrinks with screen size */
+}
+
+.header p {
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* ---------- FILTER BUTTONS ---------- */
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;      /* buttons wrap to a new line on small screens */
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.filter-btn {
+  padding: 10px 22px;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid #2a2f3d;
+  border-radius: 999px;   /* fully rounded pill shape */
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* The selected filter gets the mint fill */
+.filter-btn.active {
+  background: var(--accent);
+  color: var(--accent-dark);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- GALLERY GRID ----------
+   auto-fill + minmax: as many columns as fit, each at least 260px wide.
+   This makes it responsive without any media queries. */
+.gallery {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  transition: opacity 0.25s ease;   /* used for the fade when filtering */
+}
+
+.gallery.fading {
+  opacity: 0;
+}
+
+/* ---------- EACH IMAGE TILE ---------- */
+.gallery-item {
+  position: relative;       /* lets the overlay sit on top of the image */
+  aspect-ratio: 4 / 3;
+  overflow: hidden;         /* hides the parts of the image that zoom outside */
+  border-radius: 16px;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        /* fills the tile without stretching the photo */
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+/* Hover effect 1: image zooms in slightly */
+.gallery-item:hover img {
+  transform: scale(1.08);
+}
+
+/* The dark overlay with the title, hidden until hover */
+.overlay {
+  position: absolute;
+  inset: 0;                 /* shortcut for top/right/bottom/left = 0 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(15, 17, 21, 0.9), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover effect 2: overlay fades in */
+.gallery-item:hover .overlay {
+  opacity: 1;
+}
+
+.overlay h3 {
+  font-size: 1.05rem;
+}
+
+.tag {
+  align-self: flex-start;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  color: var(--accent-dark);
+  background: var(--accent);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* Placeholder look for images that failed to load (e.g. anime tiles for now) */
+.gallery-item.broken {
+  background: linear-gradient(135deg, #1b2a25, #171a21);
+  border: 1px dashed var(--accent);
+}
+
+.gallery-item.broken img {
+  display: none;
+}
+
+.gallery-item.broken .overlay {
+  opacity: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---------- LIGHTBOX ----------
+   Covers the whole screen. Hidden with opacity + visibility so
+   it can fade in smoothly instead of popping. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(8, 9, 12, 0.94);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-content {
+  max-width: 90vw;
+  text-align: center;
+}
+
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 78vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-content figcaption {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 1.05rem;
+}
+
+.counter {
+  color: var(--accent);
+}
+
+/* Lightbox buttons */
+.lightbox-btn {
+  position: absolute;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lightbox-btn:hover {
+  background: var(--accent);
+  color: var(--accent-dark);
+}
+
+.close-btn { top: 20px; right: 20px; font-size: 2rem; }
+.prev-btn  { left: 20px;  top: 50%; transform: translateY(-50%); }
+.next-btn  { right: 20px; top: 50%; transform: translateY(-50%); }
+
+/* On small phones, make the arrows smaller so they do not cover the image */
+@media (max-width: 600px) {
+  .nav-btn { width: 40px; height: 40px; }
+  .prev-btn { left: 8px; }
+  .next-btn { right: 8px; }
+}
