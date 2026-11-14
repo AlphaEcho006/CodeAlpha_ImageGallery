@@ -3,7 +3,7 @@
 // To add a new image later, just add another line here.
 const images = [
   // CARS
-  { src: "images/cars/porsche-911-turbo-s.jpg", title: "Porsche 911 Turbo S", category: "cars" },
+  { src: "https://images.unsplash.com/photo-1611651338412-8403fa6e3599?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D", title: "Porsche 911 Turbo S", category: "cars" },
   { src: "images/cars/chevrolet-camaro.jpg", title: "Chevrolet Camaro", category: "cars" },
   { src: "images/cars/bensberg-supersports-classic.jpg", title: "Schloss Bensberg Supersports Classic", category: "cars" },
   { src: "images/cars/dodge-challenger.jpg", title: "Dodge Challenger", category: "cars" },
@@ -57,7 +57,15 @@ function renderGallery() {
       </div>
     `;
 
-    // If the image file is missing or fails, show the mint placeholder instead
+    // Each tile starts 70ms after the one before it (the staggered rise-in)
+    item.style.animationDelay = `${index * 70}ms`;
+
+    // When the photo finishes loading, mark the tile as loaded.
+    // That hides the shimmer and fades the photo in.
+    const photo = item.querySelector("img");
+    photo.addEventListener("load", () => item.classList.add("loaded"));
+    // If the photo was already cached, it may be loaded before we listen
+    if (photo.complete && photo.naturalWidth > 0) item.classList.add("loaded");
     const img = item.querySelector("img");
     img.addEventListener("error", () => item.classList.add("broken"));
 
@@ -146,5 +154,21 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") prevImage();
 });
 
+// ---------- SWIPE SUPPORT FOR PHONES ----------
+let touchStartX = 0;
+
+lightbox.addEventListener("touchstart", (event) => {
+  touchStartX = event.changedTouches[0].screenX; // where the finger landed
+});
+
+lightbox.addEventListener("touchend", (event) => {
+  const distance = event.changedTouches[0].screenX - touchStartX;
+
+  // Ignore tiny movements; only count swipes longer than 50 pixels
+  if (Math.abs(distance) > 50) {
+    if (distance < 0) nextImage(); // swiped left -> next photo
+    else prevImage();              // swiped right -> previous photo
+  }
+});
 // ---------- 7. START ----------
 renderGallery();
